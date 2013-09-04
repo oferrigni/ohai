@@ -21,8 +21,6 @@ module Ohai
   module Mixin
     module GCEMetadata
 
-      extend self
-
       GCE_METADATA_ADDR = "metadata" unless defined?(GCE_METADATA_ADDR)
       GCE_METADATA_URL = "/computeMetadata/v1beta1/?recursive=true" unless defined?(GCE_METADATA_URL)
 
