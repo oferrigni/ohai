@@ -25,10 +25,10 @@ Ohai.plugin do
     output = nil
 
     erlang = Mash.new
-    status, stdout, stderr = run_command(:no_status_check => true, :command => "erl +V")
+    m = Mixlib::ShellOut.new("erl +V").run_command
 
-    if status == 0
-      output = stderr.split
+    if m.status == 0
+      output = m.stderr.split
       if output.length >= 6
         options = output[1]
         options.gsub!(/(\(|\))/, '')
