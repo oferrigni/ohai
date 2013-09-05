@@ -40,9 +40,9 @@ Ohai.plugin do
 
     #glibc
     ["/lib/libc.so.6", "/lib64/libc.so.6"].each do |glibc|
-      status, stdout, stderr = run_command(:no_status_check => true, :command => glibc)
-      if status == 0
-        description = stdout.split($/).first
+      m = Mixlib::ShellOut.new(glibc).run_command
+      if m.exitstatus == 0
+        description = m.stdout.split($/).first
         if description =~ /(\d+\.\d+\.?\d*)/
           c[:glibc] = Mash.new
           c[:glibc][:version] = $1
@@ -53,9 +53,9 @@ Ohai.plugin do
     end
 
     #ms cl
-    status, stdout, stderr = run_command(:no_status_check => true, :command => "cl /?")
-    if status == 0
-      description = stderr.split($/).first
+    m = Mixlib::ShellOut.new("cl /?").run_command
+    if m.exit_status == 0
+      description = m.stderr.split($/).first
       if description =~ /Compiler Version ([\d\.]+)/
         c[:cl] = Mash.new
         c[:cl][:version] = $1
@@ -64,9 +64,9 @@ Ohai.plugin do
     end
 
     #ms vs
-    status, stdout, stderr = run_command(:no_status_check => true, :command => "devenv.com /?")
-    if status == 0
-      lines = stdout.split($/)
+    m = Mixlib::ShellOut.new("devenv.com /?").run_command
+    if m.exitstatus == 0
+      lines = m.stdout.split($/)
       description = lines[0].length == 0 ? lines[1] : lines[0]
       if description =~ /Visual Studio Version ([\d\.]+)/
         c[:vs] = Mash.new
@@ -76,9 +76,9 @@ Ohai.plugin do
     end
 
     #ibm xlc
-    status, stdout, stderr = run_command(:no_status_check => true, :command => "xlc -qversion")
-    if status == 0 or (status >> 8) == 249
-      description = stdout.split($/).first
+    m = Mixlib::ShellOut.new("xlc -qversion").run_command
+    if m.status == 0 or (m.status >> 8) == 249
+      description = m.stdout.split($/).first
       if description =~ /V(\d+\.\d+)/
         c[:xlc] = Mash.new
         c[:xlc][:version] = $1
@@ -87,20 +87,20 @@ Ohai.plugin do
     end
 
     #sun pro
-    status, stdout, stderr = run_command(:no_status_check => true, :command => "cc -V -flags")
-    if status == 0
-      output = stderr.split
-      if stderr =~ /^cc: Sun C/ && output.size >= 4
+    m = Mixlib::ShellOut.new("cc -V -flags").run_command
+    if m.status == 0
+      output = m.stderr.split
+      if m.stderr =~ /^cc: Sun C/ && output.size >= 4
         c[:sunpro] = Mash.new
         c[:sunpro][:version] = output[3]
-        c[:sunpro][:description] = stderr.chomp
+        c[:sunpro][:description] = m.stderr.chomp
       end
     end
 
     #hpux cc
-    status, stdout, stderr = run_command(:no_status_check => true, :command => "what /opt/ansic/bin/cc")
-    if status == 0
-      description = stdout.split($/).select { |line| line =~ /HP C Compiler/ }.first
+    m = Mixlib::ShellOut.new("what /opt/ansic/bin/cc").run_command
+    if m.status == 0
+      description = m.stdout.split($/).select { |line| line =~ /HP C Compiler/ }.first
       if description
         output = description.split
         c[:hpcc] = Mash.new
