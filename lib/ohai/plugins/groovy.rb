@@ -26,9 +26,9 @@ Ohai.plugin do
 
     groovy = Mash.new
 
-    m = Mixlib::ShellOut.new("groovy -v").run_command
-    if m.status == 0
-      output = m.stdout.split
+    status, stdout, stderr = shell_out("groovy -v")
+    if status == 0
+      output = stdout.split
       if output.length >= 2
         groovy[:version] = output[2]
       end
