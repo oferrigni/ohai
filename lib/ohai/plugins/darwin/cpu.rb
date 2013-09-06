@@ -21,7 +21,9 @@ Ohai.plugin do
 
   collect_data do
     cpu Mash.new
-    cpu[:real]  = from("sysctl -n hw.physicalcpu").to_i
-    cpu[:total] = from("sysctl -n hw.logicalcpu").to_i
+    status, stdout, stderr = shell_out("sysctl -n hw.physicalcpu")
+    cpu[:real] = stdout.to_i
+    status, stdout, stderr = shell_out("sysctl -n hw.logicalcpu")
+    cpu[:total] = stdout.to_i
   end
 end
