@@ -33,6 +33,8 @@ module Ohai
         [m.exitstatus, m.stdout, m.stderr]
       end
 
+      module_function :shell_out
+
       def run_command(args={})
         if args.has_key?(:creates)
           if File.exists?(args[:creates])
