@@ -26,15 +26,15 @@ Ohai.plugin do
 
     status, stdout, stderr = nil
     if RUBY_PLATFORM.downcase.include?("darwin") 
-      if system("#{ Ohai.abs_path( "/usr/libexec/java_home" )} 2>&1 >#{ Ohai.dev_null }")
-        status, stdout, stderr = run_command(:no_status_check => true, :command => "java -version")
+      if File.executable?("#{ Ohai.abs_path( "/usr/libexec/java_home" )}")
+        status, stdout, stderr = shell_out("java -version")
       end
     else
-      status, stdout, stderr = run_command(:no_status_check => true, :command => "java -version")
+      status, stdout, stderr = shell_out("java -version")
     end
 
     if status == 0
-      stderr.split("\n").each do |line|
+      stderr.lines do |line|
         case line
         when /java version \"([0-9\.\_]+)\"/
           java[:version] = $1
