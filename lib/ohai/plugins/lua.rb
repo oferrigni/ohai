@@ -26,7 +26,7 @@ Ohai.plugin do
 
     lua = Mash.new
 
-    status, stdout, stderr = run_command(:no_status_check => true, :command => "lua -v")
+    status, stdout, stderr = shell_out("lua -v")
     if status == 0
       output = stderr.split
       if output.length >= 1
