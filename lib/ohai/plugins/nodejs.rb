@@ -26,7 +26,7 @@ Ohai.plugin do
 
     nodejs = Mash.new
 
-    status, stdout, stderr = run_command(:no_status_check => true, :command => "node -v")
+    status, stdout, stderr = shell_out("node -v")
     if status == 0
       output = stdout.split
       if output.length >= 1
