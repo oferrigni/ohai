@@ -26,7 +26,7 @@ Ohai.plugin do
 
     php = Mash.new
 
-    status, stdout, stderr = run_command(:no_status_check => true, :command => "php -v")
+    status, stdout, stderr = shell_out("php -v")
     if status == 0
       output = stdout.split
       if output.length >= 6
