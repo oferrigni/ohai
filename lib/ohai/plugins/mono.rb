@@ -26,7 +26,7 @@ Ohai.plugin do
 
     mono = Mash.new
 
-    status, stdout, stderr = run_command(:no_status_check => true, :command => "mono -V")
+    status, stdout, stderr = shell_out("mono -V")
     if status == 0
       output = stdout.split
       if output.length >= 4
