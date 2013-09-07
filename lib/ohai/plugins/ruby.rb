@@ -23,7 +23,7 @@ Ohai.plugin do
 
   def run_ruby(command)
     cmd = "ruby -e \"require 'rbconfig'; #{command}\""
-    status, stdout, stderr = run_command(:no_status_check => true, :command => cmd)
+    status, stdout, stderr = shell_out(cmd)
     stdout.strip
   end
 
