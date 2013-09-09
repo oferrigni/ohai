@@ -35,7 +35,7 @@ Ohai.plugin do
   # true:: If rackspace provider attribute found
   # false:: Otherwise
   def has_rackspace_metadata?
-    status, stdout, stderr = run_command(:no_status_check => true, :command => "xenstore-read vm-data/provider_data/provider")
+    status, stdout, stderr = shell_out("xenstore-read vm-data/provider_data/provider")
     if status == 0
       stdout.strip.downcase == 'rackspace'
     end
@@ -84,7 +84,7 @@ Ohai.plugin do
   # Get the rackspace region
   #
   def get_region()
-    status, stdout, stderr = run_command(:no_status_check => true, :command => "xenstore-ls vm-data/provider_data")
+    status, stdout, stderr = shell_out("xenstore-ls vm-data/provider_data")
     if status == 0
       stdout.split("\n").each do |line|
         rackspace[:region] = line.split[2].delete('\"') if line =~ /^region/
