@@ -51,6 +51,7 @@ Ohai.plugin do
     end
 
     cpu cpuinfo
-    cpu[:total] = from("sysctl -n hw.ncpu")
+    status, stdout, stderr = shell_out("sysctl -n hw.ncpu")
+    cpu[:total] = stdout.split($/)[0]
   end
 end
