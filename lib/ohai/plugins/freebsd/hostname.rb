@@ -20,7 +20,9 @@ Ohai.plugin do
   provides "hostname", "fqdn"
 
   collect_data do
-    hostname from("hostname -s")
-    fqdn from("hostname -f")
+    status, stdout, stderr = shell_out("hostname -s")
+    hostname stdout.split($/)[0]
+    status, stdout, stderr = shell_out("hostname -f")
+    fqdn stdout.split($/)[0]
   end
 end
