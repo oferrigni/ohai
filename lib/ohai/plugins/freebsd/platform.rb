@@ -20,7 +20,9 @@ Ohai.plugin do
   provides "platform", "platform_version"
 
   collect_data do
-    platform from("uname -s").downcase
-    platform_version from("uname -r")
+    status, stdout, stderr = shell_out("uname -s")
+    platform stdout.split($/)[0].downcase
+    status, stdout, stderr = shell_out("uname -r")
+    platform_version stdout.split($/)[0]
   end
 end
