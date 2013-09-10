@@ -21,16 +21,18 @@ Ohai.plugin do
 
   collect_data do
     kernel[:os] = kernel[:name]
-    kernel[:securelevel] = from_with_regex("sysctl kern.securelevel", /kern.securelevel=(.+)$/)
+    status, stdout, stderr = shell_out("sysctl kern.securelevel")
 
+    # regex modified based on sample data in the test
+    stdout = stdout.split($/).select { |e| e =~ /kern.securelevel:\ (.+)$/ }
+    kernel[:securelevel] = stdout
     mod = Mash.new
-    popen4("#{ Ohai.abs_path( "/usr/bin/modstat" )}") do |pid, stdin, stdout, stderr|
-      stdin.close
-      stdout.each do |line|
-        #  1    7 0xc0400000 97f830   kernel
-        if line =~ /(\d+)\s+(\d+)\s+([0-9a-fx]+)\s+([0-9a-fx]+)\s+([a-zA-Z0-9\_]+)/
-          kld[$5] = { :size => $4, :refcount => $2 }
-        end
+    status, stdout, stderr = shell_out("#{ Ohai.abs_path( "/usr/bin/modstat" )}")
+    stdout.lines do |line|
+      #  1    7 0xc0400000 97f830   kernel
+      if line =~ /(\d+)\s+(\d+)\s+([0-9a-fx]+)\s+([0-9a-fx]+)\s+([a-zA-Z0-9\_]+)/
+         # TODO - kld is never created.
+        kld[$5] = { :size => $4, :refcount => $2 }
       end
     end
 
