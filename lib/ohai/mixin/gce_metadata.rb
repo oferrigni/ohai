@@ -63,8 +63,7 @@ module Ohai
         
         if json?(response.body)
           data = StringIO.new(response.body)
-          parser = Yajl::Parser.new
-          parser.parse(data)
+          MultiJson.load(data)
         elsif  has_trailing_slash?(id) or (id == '')
           temp={}
           response.body.split("\n").each do |sub_attr|
@@ -78,11 +77,10 @@ module Ohai
 
       def json?(data)
         data = StringIO.new(data)
-        parser = Yajl::Parser.new
         begin
-          parser.parse(data)
+          MultiJson.load(data)
           true
-        rescue Yajl::ParseError
+        rescue MultiJson::LoadError
           false
         end
       end

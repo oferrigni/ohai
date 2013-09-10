@@ -154,8 +154,7 @@ module Ohai
           if key[-1..-1] != '/'
             data = metadata_get("#{id}#{key}", api_version).body
             json = StringIO.new(data)
-            parser = Yajl::Parser.new
-            metadata[metadata_key(key)] = parser.parse(json)
+            metadata[metadata_key(key)] = MultiJson.load(json)
           elsif not key.eql?('/')
             metadata[key[0..-2]] = fetch_json_dir_metadata("#{id}#{key}", api_version)
           end
