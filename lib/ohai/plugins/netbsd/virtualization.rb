@@ -61,8 +61,8 @@ Ohai.plugin do
             virtualization[:system] = "vmware"
             virtualization[:role] = "guest"
           end
-          end
+        end
       end
     end
-    end
+  end
 end
